@@ -1,3 +1,11 @@
+# TP
+1° export articles.csv (déjà fait)
+2° export client.csv => rajouter l'age
+3° export client.xlsx avec la mise en forme demandée (cf fichier 04-clients-excel.xlsx)
+4° export total factures (cf fichier 05-factures-excel.xlsx)
+5° export PDF d'une facture (format au choix)
+
+
 # Fonctionnement
 Ouvrir le projet dans eclipse ou intellij.
 Démarrer l'application avec la classe 'main' : com.example.demo.DemoApplication
