@@ -39,7 +39,7 @@ public class InitData implements ApplicationListener<ApplicationReadyEvent> {
 
         entityManager.persist(newClient("Hardy", "Thierry-Eugène", LocalDate.of(1996, 5, 14)));
         entityManager.persist(newClient("ABSCHEN", "Jean", LocalDate.of(1996, 5, 14)));
-        entityManager.persist(newClient("ADAMO", "Stéphane", LocalDate.of(19876, 5, 14)));
+        entityManager.persist(newClient("ADAMO", "Stéphane", LocalDate.of(1987, 5, 14)));
         entityManager.persist(newClient("AMELLAL", "Viviane", LocalDate.of(1996, 5, 14)));
         entityManager.persist(newClient("ANGONIN", "Jean-Pierre", LocalDate.of(1991, 5, 14)));
         entityManager.persist(newClient("AZOURA", "Marie-France", LocalDate.of(1996, 5, 14)));
