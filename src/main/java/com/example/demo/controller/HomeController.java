@@ -3,20 +3,19 @@ package com.example.demo.controller;
 import com.example.demo.entity.Article;
 import com.example.demo.entity.Client;
 import com.example.demo.entity.Facture;
-import com.example.demo.service.ArticleService;
-import com.example.demo.service.ClientService;
-import com.example.demo.service.FactureService;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import com.example.demo.service.*;
+import com.itextpdf.text.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -33,6 +32,15 @@ public class HomeController {
 
     @Autowired
     private FactureService factureService;
+
+    @Autowired
+    private ClientExportXLSX clientExportXLSX;
+
+    @Autowired
+    private FactureExportXLSX facturesExportXLSX;
+
+    @Autowired
+    private ExportPDFITextService exportPDFITextService;
 
     @GetMapping("/")
     public ModelAndView home() {
@@ -66,7 +74,7 @@ public class HomeController {
     }
 
     @GetMapping("/clients/csv")
-    public void clientsCSV(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void clientsCSV(HttpServletResponse response) throws IOException {
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=\"export-clients.csv\"");
         PrintWriter writer = response.getWriter();
@@ -74,28 +82,30 @@ public class HomeController {
         writer.println("Nom;Prénom;Age");
         List<Client> clients = clientService.findAllClients();
         for (Client client : clients) {
-            String line = client.getNom() + ";" + client.getPrenom() + "?TODO?";
+            int age = LocalDate.now().getYear() - client.getDateNaissance().getYear();
+            String line = client.getNom() + ";" + client.getPrenom() + ";" + age;
             writer.println(line);
         }
     }
 
     @GetMapping("/clients/xlsx")
-    public void clientsXLSX(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void clientsXLSX(HttpServletResponse response) throws IOException {
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment; filename=\"clients.xlsx\"");
-
-        Workbook workbook = new XSSFWorkbook();
-        //Apache POI
-
-        //...
-        workbook.write(response.getOutputStream());
-        workbook.close();
-
+        clientExportXLSX.clientsXLSX(response.getOutputStream());
     }
 
-    @GetMapping("/clients/pdf")
-    public void clientsPDF(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        //TODO cf github dans la soirée.
 
+    @GetMapping("/factures/xlsx")
+    public void facturesXLSX(HttpServletResponse response) throws IOException {
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=\"factures.xlsx\"");
+        facturesExportXLSX.factureXLSX(response.getOutputStream());
+    }
+
+    @GetMapping("/factures/{id}/pdf")
+    public void facturesPDF(HttpServletRequest request, HttpServletResponse response, @PathVariable Long id) throws IOException, DocumentException {
+        Facture facture = factureService.findById(id);
+        exportPDFITextService.export(response.getOutputStream(), facture);
     }
 }
