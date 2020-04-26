@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 @Service
 public class FactureExportXLSX {
@@ -20,8 +21,12 @@ public class FactureExportXLSX {
     @Autowired
     private FactureService factureService;
 
+    public void factureXLSX(Long idClient, OutputStream outputStream) throws IOException {
+        //TODO
+        factureXLSX(outputStream);
+    }
 
-    public void factureXLSX(ServletOutputStream outputStream) throws IOException {
+    public void factureXLSX(OutputStream outputStream) throws IOException {
         Workbook workbook = new XSSFWorkbook();
 
         for (Client client : clientService.findAllClients()) {
